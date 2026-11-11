@@ -282,88 +282,145 @@
         // Initial Mock Data
         const defaultVendors = [
             {
-                id: "v1",
-                name: "대성전기엔지니어링",
-                category: "전기",
-                phone: "02-555-1234",
-                manager: "김대성 대표",
-                license: "전기공사업 / 고압설비 면허",
-                scores: { tech: 4.8, speed: 4.5, manner: 4.9, price: 4.2 },
-                memo: "특고압 수배전반 점검 능력이 매우 뛰어남. 야간 정전 시 즉시 출동 가능.",
-                createdAt: "2026-01-10"
+                        "id": "v_1793946216280",
+                        "name": "주식회사 대산시스템",
+                        "category": "자동제어",
+                        "phone": "028393915",
+                        "manager": "이희충이사",
+                        "license": "",
+                        "scores": {
+                                    "tech": 5,
+                                    "speed": 5,
+                                    "manner": 5,
+                                    "price": 4
+                        },
+                        "memo": "긴급사항대응이빠르고 기술력이 우수하고 견적이 합리적임",
+                        "createdAt": "2026-11-06"
             },
             {
-                id: "v2",
-                name: "(주)한라기계설비",
-                category: "기계",
-                phone: "031-777-9888",
-                manager: "박기계 부장",
-                license: "기계설비공사업 / 급수설비",
-                scores: { tech: 4.5, speed: 4.2, manner: 4.5, price: 4.0 },
-                memo: "난방 열교환기 세관 및 펌프 오버홀 전문. 견적이 합리적임.",
-                createdAt: "2026-01-15"
+                        "id": "v_1793946662915",
+                        "name": "공성설비",
+                        "category": "기타",
+                        "phone": "01054755603",
+                        "manager": "",
+                        "license": "유도배수 누수탐지 고압세척 배관공사 수도관해빙",
+                        "scores": {
+                                    "tech": 5,
+                                    "speed": 3,
+                                    "manner": 5,
+                                    "price": 4
+                        },
+                        "memo": "기술력우수 견적합리",
+                        "createdAt": "2026-11-06"
             },
             {
-                id: "v3",
-                name: "한국소방시스템",
-                category: "소방",
-                phone: "02-333-5678",
-                manager: "이소방 팀장",
-                license: "소방시설관리업 / 전문공사",
-                scores: { tech: 4.9, speed: 4.8, manner: 4.7, price: 4.5 },
-                memo: "소방 수신기 오작동 원인 분석의 달인. 매너가 좋고 점검 보고서 깔끔.",
-                createdAt: "2026-02-01"
+                        "id": "v_1794196865166",
+                        "name": "두성하이텍 자동문",
+                        "category": "전기",
+                        "phone": "02-3661-2693",
+                        "manager": "출동기사",
+                        "license": "",
+                        "scores": {
+                                    "tech": 4,
+                                    "speed": 4,
+                                    "manner": 5,
+                                    "price": 4
+                        },
+                        "memo": "",
+                        "createdAt": "2026-11-09"
             },
             {
-                id: "v4",
-                name: "스마트오토메이션(자동제어)",
-                category: "자동제어",
-                phone: "031-888-2341",
-                manager: "최자동 과장",
-                license: "BAS 시스템 / DDC 제어기 면허",
-                scores: { tech: 4.7, speed: 4.6, manner: 4.8, price: 4.3 },
-                memo: "HAVC 중앙제어반 및 온도 센서 오작동 세팅 능력이 탁월함.",
-                createdAt: "2026-02-10"
+                        "id": "v_1794196978248",
+                        "name": "명지건설",
+                        "category": "기타",
+                        "phone": "010-5377-8089",
+                        "manager": "",
+                        "license": "소방배관 유도배수 거의모든일",
+                        "scores": {
+                                    "tech": 5,
+                                    "speed": 3,
+                                    "manner": 5,
+                                    "price": 3
+                        },
+                        "memo": "",
+                        "createdAt": "2026-11-09"
             },
             {
-                id: "v5",
-                name: "신명승강기 & 건축보수",
-                category: "기타",
-                phone: "02-777-4321",
-                manager: "정승강 소장",
-                license: "승강기 유지보수업 / 방수공사업",
-                scores: { tech: 4.4, speed: 4.3, manner: 4.6, price: 4.1 },
-                memo: "승강기 비상구출 및 지하주차장 우수 누수 방수 공사 경험 풍부.",
-                createdAt: "2026-02-15"
+                        "id": "v_1794197134597",
+                        "name": "정보frp 물탱크",
+                        "category": "기계",
+                        "phone": "024611225",
+                        "manager": "",
+                        "license": "물탱크보수전문",
+                        "scores": {
+                                    "tech": 4,
+                                    "speed": 4,
+                                    "manner": 5,
+                                    "price": 4
+                        },
+                        "memo": "냉각탑보수 3칸 3백만원",
+                        "createdAt": "2026-11-09"
+            },
+            {
+                        "id": "v_1794288642951",
+                        "name": "존슨콘트롤",
+                        "category": "자동제어",
+                        "phone": "02111111111",
+                        "manager": "박소진과장",
+                        "license": "",
+                        "scores": {
+                                    "tech": 2,
+                                    "speed": 1,
+                                    "manner": 1,
+                                    "price": 1
+                        },
+                        "memo": "견적 비교 결과 타 업체 선정 (컴퓨터 교체 견적 1,450만원, VAT 별도)",
+                        "createdAt": "2026-11-10"
+            },
+            {
+                        "id": "v_1794293949149",
+                        "name": "이수 H&C",
+                        "category": "자동제어",
+                        "phone": "010-8819-3110",
+                        "manager": "이영준 차장",
+                        "license": "용인시 수지구 광교중앙로 339 B동 908-909호 전화 02-2069-2607",
+                        "scores": {
+                                    "tech": 4,
+                                    "speed": 4,
+                                    "manner": 5,
+                                    "price": 3
+                        },
+                        "memo": "산운마을6단지 자동제어 업체",
+                        "createdAt": "2026-11-10"
+            },
+            {
+                        "id": "v_1794294222113",
+                        "name": "썬난방관리",
+                        "category": "기계",
+                        "phone": "031-405-8117",
+                        "manager": "송동주",
+                        "license": "배관 난방",
+                        "scores": {
+                                    "tech": 4,
+                                    "speed": 5,
+                                    "manner": 5,
+                                    "price": 5
+                        },
+                        "memo": "긴급작업대응 합리적견적 난방 및 배관 전문",
+                        "createdAt": "2026-11-10"
             }
-        ];
+];
 
         const defaultWorks = [
             {
-                id: "w1",
-                vendorId: "v1",
-                title: "제2동 변압기 저압측 차단기(ACB) 트립 점검 및 테스트",
-                date: "2026-02-20",
-                cost: 350000,
-                note: "절연저항 측정 이상 무, 보호계전기 트립 테스트 완료."
-            },
-            {
-                id: "w2",
-                vendorId: "v3",
-                title: "소방 수신기 연기감지기 회선 불량 개소 보수",
-                date: "2026-02-25",
-                cost: 200000,
-                note: "단선 구간 결선 재작업 후 정상 복구됨."
-            },
-            {
-                id: "w3",
-                vendorId: "v4",
-                title: "난방 메인 열교환기 자동제어 DDC 컨트롤러 통신 복구",
-                date: "2026-03-01",
-                cost: 450000,
-                note: "RS-485 통신선 재결선 및 PID 루프 파라미터 재설정 완료."
+                        "id": "w_1793950178638",
+                        "vendorId": "v_1793946216280",
+                        "title": "자동제어 시스템 교체",
+                        "date": "2026-11-06",
+                        "cost": 31000000,
+                        "note": "점검: 컴퓨터는 국산 프로그램으로 감시기능만되는 거로 사무실 과 방재실에 각각1대씩 2대를 설치해서 감시기능을 보완 중간에 Azbil 수퍼비저리컨트롤러를 두고 현장에 Azbil DDC판넬을 설치 전체 공사비를 합리적으로 조정하면서 내구성을 높임"
             }
-        ];
+];
 
         let vendors = JSON.parse(localStorage.getItem('fvh_vendors')) || defaultVendors;
         let works = JSON.parse(localStorage.getItem('fvh_works')) || defaultWorks;

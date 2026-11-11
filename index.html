@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Vendor Hub - 아파트 시설관리 우수 업체 매니저</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2.5 rounded-xl shadow-inner text-xl">
+                    <i class="fa-solid fa-building-shield"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Facility Vendor Hub</h1>
+                    <p class="text-xs text-slate-400">아파트 시설관리 전문 우수 유지보수 업체 매니저</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openVendorModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> 신규 업체 등록
+                </button>
+                <button onclick="openWorkModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list"></i> 작업 이력 추가
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
+
+        <!-- Dashboard Metrics -->
+        <section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-gray-500">등록 업체 총수</span>
+                <div class="flex items-baseline justify-between mt-2">
+                    <span id="stat-total" class="text-2xl font-bold text-gray-900">0</span>
+                    <i class="fa-solid fa-building text-blue-500 text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-gray-500">전기 분야</span>
+                <div class="flex items-baseline justify-between mt-2">
+                    <span id="stat-elec" class="text-2xl font-bold text-blue-600">0</span>
+                    <i class="fa-solid fa-bolt text-amber-500 text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-gray-500">기계 분야</span>
+                <div class="flex items-baseline justify-between mt-2">
+                    <span id="stat-mech" class="text-2xl font-bold text-emerald-600">0</span>
+                    <i class="fa-solid fa-gears text-emerald-500 text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-gray-500">소방 분야</span>
+                <div class="flex items-baseline justify-between mt-2">
+                    <span id="stat-fire" class="text-2xl font-bold text-rose-600">0</span>
+                    <i class="fa-solid fa-fire-extinguisher text-rose-500 text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-gray-500">자동제어 분야</span>
+                <div class="flex items-baseline justify-between mt-2">
+                    <span id="stat-auto" class="text-2xl font-bold text-purple-600">0</span>
+                    <i class="fa-solid fa-microchip text-purple-500 text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <span class="text-xs font-semibold text-gray-500">기타 분야</span>
+                <div class="flex items-baseline justify-between mt-2">
+                    <span id="stat-etc" class="text-2xl font-bold text-indigo-600">0</span>
+                    <i class="fa-solid fa-toolbox text-indigo-500 text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between col-span-2 md:col-span-1">
+                <span class="text-xs font-semibold text-gray-500">누적 발주 금액</span>
+                <div class="flex items-baseline justify-between mt-2">
+                    <span id="stat-cost" class="text-lg font-bold text-slate-700 truncate">0원</span>
+                    <i class="fa-solid fa-won-sign text-slate-400 text-lg"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Filter Bar -->
+        <section class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                <button onclick="filterCategory('전체')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white transition shadow-sm" data-category="전체">전체 보기</button>
+                <button onclick="filterCategory('전기')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition" data-category="전기">전기</button>
+                <button onclick="filterCategory('기계')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition" data-category="기계">기계</button>
+                <button onclick="filterCategory('소방')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition" data-category="소방">소방</button>
+                <button onclick="filterCategory('자동제어')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition" data-category="자동제어">자동제어</button>
+                <button onclick="filterCategory('기타')" class="cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition" data-category="기타">기타</button>
+            </div>
+            <div class="relative w-full md:w-72">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <i class="fa-solid fa-search"></i>
+                </span>
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="업체명, 담당자, 특이사항 검색..." class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Vendor Directory List (2 Columns) -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="flex justify-between items-center px-1">
+                    <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-blue-600"></i> 협력 업체 디렉토리
+                    </h2>
+                    <span id="vendor-count-text" class="text-xs text-gray-500 font-medium">총 0개 업체</span>
+                </div>
+                
+                <div id="vendor-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic Rendered Vendor Cards -->
+                </div>
+            </div>
+
+            <!-- Work History & Inspection Log (1 Column) -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center px-1">
+                    <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-slate-700"></i> 작업 및 점검 이력
+                    </h2>
+                    <span class="text-xs text-gray-500 font-medium">최신순</span>
+                </div>
+
+                <div id="work-history-container" class="space-y-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100 max-h-[700px] overflow-y-auto">
+                    <!-- Dynamic Rendered Work History -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-400">
+            Facility Vendor Hub &copy; 2026 아파트 시설관리 책임 관리 시스템. 자격증 보유자 검증 기반 플랫폼.
+        </div>
+    </footer>
+
+    <!-- Vendor Modal -->
+    <div id="vendor-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 id="vendor-modal-title" class="font-bold text-base">신규 협력 업체 등록</h3>
+                <button onclick="closeVendorModal()" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="vendor-form" onsubmit="saveVendor(event)" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="vendor-id">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">업체명 *</label>
+                        <input type="text" id="v-name" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="예: (주)한국전기안전">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">전문 분야 *</label>
+                        <select id="v-category" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="전기">전기</option>
+                            <option value="기계">기계</option>
+                            <option value="소방">소방</option>
+                            <option value="자동제어">자동제어</option>
+                            <option value="기타">기타 (건축, 승강기, 조경 등)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">대표 연락처 *</label>
+                        <input type="text" id="v-phone" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="02-000-0000">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">현장 담당자</label>
+                        <input type="text" id="v-manager" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="홍길동 소장/부장">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">보유 자격 및 면허</label>
+                    <input type="text" id="v-license" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="예: 전기공사업 면허, 소방시설관리사 상주 등">
+                </div>
+
+                <hr class="border-gray-100 my-2">
+                <p class="text-xs font-bold text-blue-600">소장님 직접 평가 (1점 ~ 5점)</p>
+
+                <div class="grid grid-cols-2 gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">1. 기술력 / 해결 능력</label>
+                        <input type="number" id="v-score-tech" min="1" max="5" step="0.5" value="4" required class="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">2. 긴급 출동 / 대응 속도</label>
+                        <input type="number" id="v-score-speed" min="1" max="5" step="0.5" value="4" required class="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">3. 서비스 매너 / 친절도</label>
+                        <input type="number" id="v-score-manner" min="1" max="5" step="4" value="4" required class="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">4. 견적 가격 적정성</label>
+                        <input type="number" id="v-score-price" min="1" max="5" step="0.5" value="4" required class="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">관리자 메모 (특이사항, 장단점)</label>
+                    <textarea id="v-memo" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="야간 긴급 작업 대응이 매우 빠르고 깔끔함. 거품 없는 견적 제공."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeVendorModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">취소</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition shadow">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Work History Modal -->
+    <div id="work-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-base">작업 및 유지보수 이력 추가</h3>
+                <button onclick="closeWorkModal()" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="work-form" onsubmit="saveWork(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">작업 수행 업체 *</label>
+                    <select id="w-vendor-id" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                        <!-- Dynamic Options -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">작업 내용 / 공사명 *</label>
+                    <input type="text" id="w-title" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="예: 지하 2층 수중배수펌프 모터 교체">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">작업 일자 *</label>
+                        <input type="date" id="w-date" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">투입 비용 (원)</label>
+                        <input type="number" id="w-cost" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="예: 450000">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">현장 책임 점검 결과</label>
+                    <textarea id="w-note" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="시운전 완료, 절연저항 정상 확인. 뒷정리 깨끗함."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeWorkModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">취소</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition shadow">이력 등록</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // Initial Mock Data
+        const defaultVendors = [
+            {
+                id: "v1",
+                name: "대성전기엔지니어링",
+                category: "전기",
+                phone: "02-555-1234",
+                manager: "김대성 대표",
+                license: "전기공사업 / 고압설비 면허",
+                scores: { tech: 4.8, speed: 4.5, manner: 4.9, price: 4.2 },
+                memo: "특고압 수배전반 점검 능력이 매우 뛰어남. 야간 정전 시 즉시 출동 가능.",
+                createdAt: "2026-01-10"
+            },
+            {
+                id: "v2",
+                name: "(주)한라기계설비",
+                category: "기계",
+                phone: "031-777-9888",
+                manager: "박기계 부장",
+                license: "기계설비공사업 / 급수설비",
+                scores: { tech: 4.5, speed: 4.2, manner: 4.5, price: 4.0 },
+                memo: "난방 열교환기 세관 및 펌프 오버홀 전문. 견적이 합리적임.",
+                createdAt: "2026-01-15"
+            },
+            {
+                id: "v3",
+                name: "한국소방시스템",
+                category: "소방",
+                phone: "02-333-5678",
+                manager: "이소방 팀장",
+                license: "소방시설관리업 / 전문공사",
+                scores: { tech: 4.9, speed: 4.8, manner: 4.7, price: 4.5 },
+                memo: "소방 수신기 오작동 원인 분석의 달인. 매너가 좋고 점검 보고서 깔끔.",
+                createdAt: "2026-02-01"
+            },
+            {
+                id: "v4",
+                name: "스마트오토메이션(자동제어)",
+                category: "자동제어",
+                phone: "031-888-2341",
+                manager: "최자동 과장",
+                license: "BAS 시스템 / DDC 제어기 면허",
+                scores: { tech: 4.7, speed: 4.6, manner: 4.8, price: 4.3 },
+                memo: "HAVC 중앙제어반 및 온도 센서 오작동 세팅 능력이 탁월함.",
+                createdAt: "2026-02-10"
+            },
+            {
+                id: "v5",
+                name: "신명승강기 & 건축보수",
+                category: "기타",
+                phone: "02-777-4321",
+                manager: "정승강 소장",
+                license: "승강기 유지보수업 / 방수공사업",
+                scores: { tech: 4.4, speed: 4.3, manner: 4.6, price: 4.1 },
+                memo: "승강기 비상구출 및 지하주차장 우수 누수 방수 공사 경험 풍부.",
+                createdAt: "2026-02-15"
+            }
+        ];
+
+        const defaultWorks = [
+            {
+                id: "w1",
+                vendorId: "v1",
+                title: "제2동 변압기 저압측 차단기(ACB) 트립 점검 및 테스트",
+                date: "2026-02-20",
+                cost: 350000,
+                note: "절연저항 측정 이상 무, 보호계전기 트립 테스트 완료."
+            },
+            {
+                id: "w2",
+                vendorId: "v3",
+                title: "소방 수신기 연기감지기 회선 불량 개소 보수",
+                date: "2026-02-25",
+                cost: 200000,
+                note: "단선 구간 결선 재작업 후 정상 복구됨."
+            },
+            {
+                id: "w3",
+                vendorId: "v4",
+                title: "난방 메인 열교환기 자동제어 DDC 컨트롤러 통신 복구",
+                date: "2026-03-01",
+                cost: 450000,
+                note: "RS-485 통신선 재결선 및 PID 루프 파라미터 재설정 완료."
+            }
+        ];
+
+        let vendors = JSON.parse(localStorage.getItem('fvh_vendors')) || defaultVendors;
+        let works = JSON.parse(localStorage.getItem('fvh_works')) || defaultWorks;
+        let currentFilter = '전체';
+        let searchQuery = '';
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            document.getElementById('w-date').valueAsDate = new Date();
+        });
+
+        function saveData() {
+            localStorage.setItem('fvh_vendors', JSON.stringify(vendors));
+            localStorage.setItem('fvh_works', JSON.stringify(works));
+        }
+
+        function renderAll() {
+            updateStats();
+            renderVendors();
+            renderWorkHistory();
+            updateVendorSelect();
+        }
+
+        // Stats Calculation
+        function updateStats() {
+            document.getElementById('stat-total').innerText = vendors.length;
+            document.getElementById('stat-elec').innerText = vendors.filter(v => v.category === '전기').length;
+            document.getElementById('stat-mech').innerText = vendors.filter(v => v.category === '기계').length;
+            document.getElementById('stat-fire').innerText = vendors.filter(v => v.category === '소방').length;
+            document.getElementById('stat-auto').innerText = vendors.filter(v => v.category === '자동제어').length;
+            document.getElementById('stat-etc').innerText = vendors.filter(v => v.category === '기타').length;
+
+            const totalCost = works.reduce((acc, cur) => acc + (Number(cur.cost) || 0), 0);
+            document.getElementById('stat-cost').innerText = totalCost.toLocaleString() + '원';
+        }
+
+        // Filter & Search
+        function filterCategory(category) {
+            currentFilter = category;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if(btn.dataset.category === category) {
+                    btn.className = "cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white transition shadow-sm";
+                } else {
+                    btn.className = "cat-btn px-3.5 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition";
+                }
+            });
+            renderVendors();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase();
+            renderVendors();
+        }
+
+        // Grade Calculator
+        function calculateGrade(scores) {
+            const avg = (scores.tech + scores.speed + scores.manner + scores.price) / 4;
+            if (avg >= 4.7) return { grade: 'S', color: 'bg-amber-100 text-amber-800 border-amber-300', label: '최우수 파트너' };
+            if (avg >= 4.3) return { grade: 'A', color: 'bg-blue-100 text-blue-800 border-blue-300', label: '우수 협력사' };
+            if (avg >= 3.8) return { grade: 'B', color: 'bg-emerald-100 text-emerald-800 border-emerald-300', label: '일반 양호' };
+            return { grade: 'C', color: 'bg-rose-100 text-rose-800 border-rose-300', label: '주의 필요' };
+        }
+
+        // Render Vendors
+        function renderVendors() {
+            const container = document.getElementById('vendor-list-container');
+            container.innerHTML = '';
+
+            let filtered = vendors.filter(v => {
+                const matchCat = currentFilter === '전체' || v.category === currentFilter;
+                const matchSearch = v.name.toLowerCase().includes(searchQuery) || 
+                                    (v.manager && v.manager.toLowerCase().includes(searchQuery)) || 
+                                    (v.memo && v.memo.toLowerCase().includes(searchQuery)) ||
+                                    (v.license && v.license.toLowerCase().includes(searchQuery));
+                return matchCat && matchSearch;
+            });
+
+            document.getElementById('vendor-count-text').innerText = `총 ${filtered.length}개 업체`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 bg-white p-8 rounded-xl border border-gray-100 text-center text-gray-400">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+                        <p class="text-sm">등록된 협력 업체가 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(v => {
+                const avgScore = ((v.scores.tech + v.scores.speed + v.scores.manner + v.scores.price) / 4).toFixed(1);
+                const gradeInfo = calculateGrade(v.scores);
+
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-2">
+                            <div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">${v.category}</span>
+                                <h3 class="font-bold text-base text-gray-900 mt-1">${v.name}</h3>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${gradeInfo.color}">${gradeInfo.grade}등급 (${gradeInfo.label})</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3"><i class="fa-solid fa-certificate text-amber-500 mr-1"></i> ${v.license || '면허 정보 없음'}</p>
+                        
+                        <div class="grid grid-cols-2 gap-2 text-xs bg-gray-50 p-2.5 rounded-lg mb-3 text-gray-600">
+                            <div><i class="fa-solid fa-phone text-blue-500 mr-1"></i> ${v.phone}</div>
+                            <div><i class="fa-solid fa-user-tie text-blue-500 mr-1"></i> ${v.manager || '담당자 미입력'}</div>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-1 text-center text-[11px] mb-3 bg-blue-50/50 p-2 rounded-lg text-gray-700">
+                            <div>기술: <b>${v.scores.tech}</b></div>
+                            <div>대응: <b>${v.scores.speed}</b></div>
+                            <div>친절: <b>${v.scores.manner}</b></div>
+                            <div>가격: <b>${v.scores.price}</b></div>
+                        </div>
+
+                        <p class="text-xs text-gray-600 bg-slate-50 p-2.5 rounded-lg italic">"${v.memo || '특이사항 메모 없음'}"</p>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-100 text-xs">
+                        <span class="text-gray-400">종합 평점: <b class="text-gray-800">${avgScore} / 5.0</b></span>
+                        <div class="flex gap-2">
+                            <button onclick="editVendor('${v.id}')" class="text-blue-600 hover:text-blue-800 font-medium"><i class="fa-solid fa-pen-to-square"></i> 수정</button>
+                            <button onclick="deleteVendor('${v.id}')" class="text-rose-500 hover:text-rose-700 font-medium"><i class="fa-solid fa-trash"></i> 삭제</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Render Work History
+        function renderWorkHistory() {
+            const container = document.getElementById('work-history-container');
+            container.innerHTML = '';
+
+            let sortedWorks = [...works].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            if (sortedWorks.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">등록된 작업 이력이 없습니다.</p>`;
+                return;
+            }
+
+            sortedWorks.forEach(w => {
+                const vendor = vendors.find(v => v.id === w.vendorId);
+                const vendorName = vendor ? vendor.name : '삭제된 업체';
+
+                const item = document.createElement('div');
+                item.className = "p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs space-y-1.5 relative";
+                item.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="font-bold text-gray-900">${w.title}</span>
+                        <button onclick="deleteWork('${w.id}')" class="text-gray-400 hover:text-rose-600"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="flex justify-between text-gray-500">
+                        <span>업체: <b class="text-blue-600">${vendorName}</b></span>
+                        <span>${w.date}</span>
+                    </div>
+                    <div class="flex justify-between text-gray-500">
+                        <span>비용: <b>${Number(w.cost || 0).toLocaleString()}원</b></span>
+                    </div>
+                    ${w.note ? `<p class="text-gray-600 italic bg-white p-2 rounded border border-gray-100 mt-1">점검: ${w.note}</p>` : ''}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateVendorSelect() {
+            const select = document.getElementById('w-vendor-id');
+            select.innerHTML = '';
+            vendors.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v.id;
+                opt.innerText = `[${v.category}] ${v.name}`;
+                select.appendChild(opt);
+            });
+        }
+
+        // Vendor Modal Control
+        function openVendorModal(id = null) {
+            document.getElementById('vendor-modal').classList.remove('hidden');
+            if (id) {
+                document.getElementById('vendor-modal-title').innerText = '협력 업체 정보 수정';
+                const v = vendors.find(item => item.id === id);
+                document.getElementById('vendor-id').value = v.id;
+                document.getElementById('v-name').value = v.name;
+                document.getElementById('v-category').value = v.category;
+                document.getElementById('v-phone').value = v.phone;
+                document.getElementById('v-manager').value = v.manager;
+                document.getElementById('v-license').value = v.license;
+                document.getElementById('v-score-tech').value = v.scores.tech;
+                document.getElementById('v-score-speed').value = v.scores.speed;
+                document.getElementById('v-score-manner').value = v.scores.manner;
+                document.getElementById('v-score-price').value = v.scores.price;
+                document.getElementById('v-memo').value = v.memo;
+            } else {
+                document.getElementById('vendor-modal-title').innerText = '신규 협력 업체 등록';
+                document.getElementById('vendor-form').reset();
+                document.getElementById('vendor-id').value = '';
+            }
+        }
+
+        function closeVendorModal() {
+            document.getElementById('vendor-modal').classList.add('hidden');
+        }
+
+        function saveVendor(e) {
+            e.preventDefault();
+            const id = document.getElementById('vendor-id').value;
+            const vendorData = {
+                id: id ? id : 'v_' + Date.now(),
+                name: document.getElementById('v-name').value,
+                category: document.getElementById('v-category').value,
+                phone: document.getElementById('v-phone').value,
+                manager: document.getElementById('v-manager').value,
+                license: document.getElementById('v-license').value,
+                scores: {
+                    tech: parseFloat(document.getElementById('v-score-tech').value),
+                    speed: parseFloat(document.getElementById('v-score-speed').value),
+                    manner: parseFloat(document.getElementById('v-score-manner').value),
+                    price: parseFloat(document.getElementById('v-score-price').value)
+                },
+                memo: document.getElementById('v-memo').value,
+                createdAt: id ? vendors.find(v => v.id === id).createdAt : new Date().toISOString().split('T')[0]
+            };
+
+            if (id) {
+                const idx = vendors.findIndex(v => v.id === id);
+                vendors[idx] = vendorData;
+            } else {
+                vendors.push(vendorData);
+            }
+
+            saveData();
+            renderAll();
+            closeVendorModal();
+        }
+
+        function editVendor(id) {
+            openVendorModal(id);
+        }
+
+        function deleteVendor(id) {
+            if(confirm('정말 이 협력 업체 정보를 삭제하시겠습니까?')) {
+                vendors = vendors.filter(v => v.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+
+        // Work Modal Control
+        function openWorkModal() {
+            if(vendors.length === 0) {
+                alert('먼저 등록된 협력 업체가 있어야 작업 이력을 추가할 수 있습니다.');
+                return;
+            }
+            document.getElementById('work-modal').classList.remove('hidden');
+        }
+
+        function closeWorkModal() {
+            document.getElementById('work-modal').classList.add('hidden');
+        }
+
+        function saveWork(e) {
+            e.preventDefault();
+            const workData = {
+                id: 'w_' + Date.now(),
+                vendorId: document.getElementById('w-vendor-id').value,
+                title: document.getElementById('w-title').value,
+                date: document.getElementById('w-date').value,
+                cost: parseFloat(document.getElementById('w-cost').value) || 0,
+                note: document.getElementById('w-note').value
+            };
+
+            works.push(workData);
+            saveData();
+            renderAll();
+            closeWorkModal();
+            document.getElementById('work-form').reset();
+            document.getElementById('w-date').valueAsDate = new Date();
+        }
+
+        function deleteWork(id) {
+            if(confirm('이 작업 이력을 삭제하시겠습니까?')) {
+                works = works.filter(w => w.id !== id);
+                saveData();
+                renderAll();
+            }
+        }
+    </script>
+</body>
+</html>
